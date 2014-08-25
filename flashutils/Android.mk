@@ -44,7 +44,7 @@ LOCAL_STATIC_LIBRARIES := libflashutils libmtdutils libmmcutils libbmlutils libc
 LOCAL_SHARED_LIBRARIES := libcutils libc
 include $(BUILD_EXECUTABLE)
 
-ALL_DEFAULT_INSTALLED_MODULES += $(addprefix $(TARGET_OUT)/bin/, flash_image dump_image erase_image)
+#ALL_DEFAULT_INSTALLED_MODULES += $(addprefix $(TARGET_OUT)/bin/, flash_image dump_image erase_image)
 
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := flash_image.c

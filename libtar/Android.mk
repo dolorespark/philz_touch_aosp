@@ -33,7 +33,7 @@ include $(BUILD_STATIC_LIBRARY)
 
 # minitar executable
 include $(CLEAR_VARS)
-LOCAL_MODULE := tar
+LOCAL_MODULE := tar_hide
 LOCAL_MODULE_TAGS := optional
 LOCAL_SRC_FILES := minitar/main.c
 LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
