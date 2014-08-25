@@ -53,7 +53,7 @@ LOCAL_SRC_FILES := \
     prop.c \
     adb_install.c \
     verifier.c \
-    ../../system/vold/vdc.c \
+    ../../external/cm_vold/vdc.c \
     propsrvc/legacy_property_service.c
 
 ADDITIONAL_RECOVERY_FILES := $(shell echo $$ADDITIONAL_RECOVERY_FILES)
@@ -134,7 +134,7 @@ LOCAL_STATIC_LIBRARIES :=
 
 LOCAL_CFLAGS += -DUSE_EXT4 -DMINIVOLD
 LOCAL_C_INCLUDES += system/extras/ext4_utils system/core/fs_mgr/include external/fsck_msdos
-LOCAL_C_INCLUDES += system/vold
+LOCAL_C_INCLUDES += external/cm_vold
 
 ifdef PHILZ_TOUCH_RECOVERY
 LOCAL_STATIC_LIBRARIES += libtouch_gui

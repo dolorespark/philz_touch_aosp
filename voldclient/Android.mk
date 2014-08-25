@@ -9,6 +9,6 @@ LOCAL_C_INCLUDES :=         	\
     system/core/fs_mgr/include	\
     system/core/include     	\
     system/core/libcutils   	\
-    system/vold
+    external/cm_vold
 LOCAL_MODULE_TAGS := optional
 include $(BUILD_STATIC_LIBRARY)

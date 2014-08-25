@@ -26,7 +26,7 @@ LOCAL_C_INCLUDES += \
 LOCAL_C_INCLUDES += \
     system/core/include \
     system/core/libcutils \
-    system/vold
+    external/cm_vold
 
 LOCAL_MODULE_TAGS := eng
 
