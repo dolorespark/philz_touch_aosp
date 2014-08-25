@@ -30,24 +30,7 @@ LOCAL_MODULE_CLASS := RECOVERY_EXECUTABLES
 LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/sbin
 LOCAL_SRC_FILES := $(LOCAL_MODULE)
 include $(BUILD_PREBUILT)
-
 endif
-
-include $(CLEAR_VARS)
-LOCAL_STATIC_LIBRARIES := libz
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE := libminizip
-LOCAL_CFLAGS := -Dmain=minizip_main -D__ANDROID__ -DIOAPI_NO_64
-LOCAL_C_INCLUDES := external/zlib
-LOCAL_SRC_FILES := ../../../external/zlib/src/contrib/minizip/minizip.c ../../../external/zlib/src/contrib/minizip/zip.c ../../../external/zlib/src/contrib/minizip/ioapi.c
-include $(BUILD_STATIC_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE := libmake_ext4fs
-LOCAL_CFLAGS := -Dmain=make_ext4fs_main
-LOCAL_SRC_FILES := ../../../system/extras/ext4_utils/make_ext4fs_main.c
-include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := zip
@@ -56,3 +39,52 @@ LOCAL_MODULE_CLASS := RECOVERY_EXECUTABLES
 LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/sbin
 LOCAL_SRC_FILES := $(LOCAL_MODULE)
 include $(BUILD_PREBUILT)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := e2fsck_recovery
+LOCAL_MODULE_STEM := e2fsck
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := RECOVERY_EXECUTABLES
+LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/sbin
+LOCAL_SRC_FILES := $(LOCAL_MODULE_STEM)
+include $(BUILD_PREBUILT)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := mke2fs_recovery
+LOCAL_MODULE_STEM := mke2fs
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := RECOVERY_EXECUTABLES
+LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/sbin
+LOCAL_SRC_FILES := $(LOCAL_MODULE_STEM)
+include $(BUILD_PREBUILT)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := tune2fs_recovery
+LOCAL_MODULE_STEM := tune2fs
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := RECOVERY_EXECUTABLES
+LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/sbin
+LOCAL_SRC_FILES := $(LOCAL_MODULE_STEM)
+include $(BUILD_PREBUILT)
+
+LOCAL_PATH:= external/zlib/src/contrib/minizip
+include $(CLEAR_VARS)
+LOCAL_STATIC_LIBRARIES := libz
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE := libminizip
+LOCAL_CFLAGS := -Dmain=minizip_main -D__ANDROID__ -DIOAPI_NO_64
+LOCAL_C_INCLUDES := $(LOCAL_PATH) external/zlib
+LOCAL_SRC_FILES := \
+	minizip.c \
+	zip.c \
+	ioapi.c
+include $(BUILD_STATIC_LIBRARY)
+
+LOCAL_PATH:= system/extras/ext4_utils
+include $(CLEAR_VARS)
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE := libmake_ext4fs
+LOCAL_CFLAGS := -Dmain=make_ext4fs_main
+LOCAL_SRC_FILES := make_ext4fs_main.c
+include $(BUILD_STATIC_LIBRARY)
+
