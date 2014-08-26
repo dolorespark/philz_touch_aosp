@@ -242,14 +242,6 @@ $(RECOVERY_BUSYBOX_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 
 ALL_DEFAULT_INSTALLED_MODULES += $(RECOVERY_BUSYBOX_SYMLINKS) 
 
-# Reboot static library
-include $(CLEAR_VARS)
-LOCAL_MODULE := libreboot_static
-LOCAL_MODULE_TAGS := optional
-LOCAL_CFLAGS := -Dmain=reboot_main
-LOCAL_SRC_FILES := ../../system/core/reboot/reboot.c
-include $(BUILD_STATIC_LIBRARY)
-
 include $(CLEAR_VARS)
 LOCAL_MODULE := killrecovery.sh
 LOCAL_MODULE_TAGS := optional
@@ -293,6 +285,7 @@ LOCAL_STATIC_LIBRARIES := libmincrypt libcutils libstdc++ libc
 include $(BUILD_EXECUTABLE)
 
 include $(commands_recovery_local_path)/cm_fsck_msdos/Android.mk
+include $(commands_recovery_local_path)/cm_system_core/Android.mk
 include $(commands_recovery_local_path)/cm_yaffs2/Android.mk
 include $(commands_recovery_local_path)/bmlutils/Android.mk
 include $(commands_recovery_local_path)/dedupe/Android.mk
