@@ -123,8 +123,12 @@ Value* MountFn(const char* name, State* state, int argc, Expr* argv[]) {
         }
         result = mount_point;
     } else {
+        const char *data = "";
+        if (!strcmp(fs_type, "f2fs")) {
+            data = "inline_xattr,background_gc=off";
+        }
         if (mount(location, mount_point, fs_type,
-                  MS_NOATIME | MS_NODEV | MS_NODIRATIME, "") < 0) {
+                  MS_NOATIME | MS_NODEV | MS_NODIRATIME, data) < 0) {
             printf("%s: failed to mount %s at %s: %s\n",
                     name, location, mount_point, strerror(errno));
             result = strdup("");
@@ -208,6 +212,11 @@ done:
 //    if fs_size == 0, then make_ext4fs uses the entire partition.
 //    if fs_size > 0, that is the size to use
 //    if fs_size < 0, then reserve that many bytes at the end of the partition
+
+#ifdef USE_F2FS
+extern int make_f2fs_main(int argc, char **argv);
+#endif
+
 Value* FormatFn(const char* name, State* state, int argc, Expr* argv[]) {
     char* result = NULL;
     if (argc != 5) {
@@ -274,6 +283,29 @@ Value* FormatFn(const char* name, State* state, int argc, Expr* argv[]) {
         int status = make_ext4fs(location, atoll(fs_size), mount_point, sehandle);
         if (status != 0) {
             printf("%s: make_ext4fs failed (%d) on %s",
+                    name, status, location);
+            result = strdup("");
+            goto done;
+        }
+        result = location;
+#endif
+#ifdef USE_F2FS
+    } else if (strcmp(fs_type, "f2fs") == 0) {
+        int64_t fs_bytes;
+        int     status;
+        int     arg_cnt = 2;
+        char    len[32];
+        char*   args[] = { "mkfs.f2fs", location, len };
+
+        /* mkfs.f2fs takes its fs_size in sectors and doesn't accept negative values */
+        fs_bytes = atoll(fs_size);
+        if (fs_bytes > 0) {
+            sprintf(len, "%lld", fs_bytes / 512);
+            arg_cnt++;
+        }
+        status = make_f2fs_main(arg_cnt, args);
+        if (status != 0) {
+            printf("%s: mkfs.f2fs failed (%d) on %s",
                     name, status, location);
             result = strdup("");
             goto done;
