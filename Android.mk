@@ -180,7 +180,7 @@ endif
 
 ifeq ($(TARGET_USERIMAGES_USE_F2FS), true)
 LOCAL_CFLAGS += -DUSE_F2FS
-LOCAL_STATIC_LIBRARIES += libmake_f2fs libfsck_f2fs libfibmap_f2fs
+LOCAL_STATIC_LIBRARIES += libcm_f2fs_fmt libcm_fsck_f2fs libcm_fibmap_f2fs
 endif
 
 LOCAL_STATIC_LIBRARIES += libminzip libunz libmincrypt
@@ -284,6 +284,7 @@ LOCAL_STATIC_LIBRARIES := libmincrypt libcutils libstdc++ libc
 
 include $(BUILD_EXECUTABLE)
 
+include $(commands_recovery_local_path)/cm_f2fs-tools/Android.mk
 include $(commands_recovery_local_path)/cm_fsck_msdos/Android.mk
 include $(commands_recovery_local_path)/cm_system_core/Android.mk
 include $(commands_recovery_local_path)/cm_yaffs2/Android.mk
