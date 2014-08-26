@@ -828,6 +828,8 @@ int rmtree_except(const char* path, const char* except)
 extern int make_f2fs_main(int argc, char **argv);
 #endif
 int format_volume(const char* volume) {
+    int64_t length;
+
     // check if we're formatting primary_storage (/sdcard) on /data/media device
     // in that case, issue a rm -rf like command
     if (is_data_media_volume_path(volume)) {
@@ -909,8 +911,20 @@ int format_volume(const char* volume) {
         return 0;
     }
 
+    // ensure encryptable volumes (i.e. /data) that store their crypto
+    // data at the end of the partition remain encryptable by shrinking
+    // the filesystem by the size of the encryption footer (i.e. 16k)
+    length = v->length;
+    if (length == 0 &&
+        fs_mgr_is_encryptable(v) && !fs_mgr_is_voldmanaged(v) &&
+        v->key_loc && !strcmp(v->key_loc, "footer") &&
+        !Find_Partition_Size(v->mount_point)) {
+        length = Total_Size - 16384;
+        LOGW("format_volume: added encryption footer to %s\n", v->blk_device);
+    }
+
     if (strcmp(v->fs_type, "ext4") == 0) {
-        int result = make_ext4fs(v->blk_device, v->length, volume, sehandle);
+        int result = make_ext4fs(v->blk_device, length, v->mount_point, sehandle);
         if (result != 0) {
             LOGE("format_volume: make_ext4fs failed on %s\n", v->blk_device);
             return -1;
@@ -920,8 +934,15 @@ int format_volume(const char* volume) {
 
 #ifdef USE_F2FS
     if (strcmp(v->fs_type, "f2fs") == 0) {
-        char* args[] = { "mkfs.f2fs", v->blk_device };
-        if (make_f2fs_main(2, args) != 0) {
+        int   arg_cnt = 2;
+        char  len[32];
+        char* args[] = { "mkfs.f2fs", v->blk_device, len };
+
+        if (length) {
+            sprintf(len, "%llu", length / 512);
+            arg_cnt++;
+        }
+        if (make_f2fs_main(arg_cnt, args) != 0) {
             LOGE("format_volume: mkfs.f2fs failed on %s\n", v->blk_device);
             return -1;
         }
@@ -986,6 +1007,8 @@ void setup_legacy_storage_paths() {
 // format to user choice fstype
 // called by nandroid_restore_partition_extended() and format_ext4_or_f2fs()
 int format_device(const char *device, const char *path, const char *fs_type) {
+    int64_t length;
+
     if (is_data_media_volume_path(path)) {
         // we're formatting primary_storage (/sdcard) on /data/media device: issue a rm -rf like command
         return format_unknown_device(NULL, path, NULL);
@@ -1053,16 +1076,22 @@ int format_device(const char *device, const char *path, const char *fs_type) {
         return 0;
     }
 
-    if (strcmp(fs_type, "ext4") == 0) {
-        int length = 0;
-        if (strcmp(v->fs_type, "ext4") == 0) {
-            // Our desired filesystem matches the one in fstab, respect v->length
-            length = v->length;
-        }
+    // ensure encryptable volumes (i.e. /data) that store their crypto
+    // data at the end of the partition remain encryptable by shrinking
+    // the filesystem by the size of the encryption footer (i.e. 16k)
+    length = v->length;
+    if (length == 0 &&
+        fs_mgr_is_encryptable(v) && !fs_mgr_is_voldmanaged(v) &&
+        v->key_loc && !strcmp(v->key_loc, "footer") &&
+        !Find_Partition_Size(v->mount_point)) {
+        length = Total_Size - 16384;
+        LOGW("format_volume: added encryption footer to %s\n", v->blk_device);
+    }
 
-        int result = make_ext4fs(device, length, v->mount_point, sehandle);
+    if (strcmp(fs_type, "ext4") == 0) {
+        int result = make_ext4fs(v->blk_device, length, v->mount_point, sehandle);
         if (result != 0) {
-            LOGE("format_volume: make_ext4fs failed on %s\n", device);
+            LOGE("format_volume: make_ext4fs failed on %s\n", v->blk_device);
             return -1;
         }
         return 0;
@@ -1070,14 +1099,22 @@ int format_device(const char *device, const char *path, const char *fs_type) {
 
 #ifdef USE_F2FS
     if (strcmp(fs_type, "f2fs") == 0) {
-        char* args[] = { "mkfs.f2fs", v->blk_device };
-        if (make_f2fs_main(2, args) != 0) {
+        char  len[32];
+        char* args[] = { "mkfs.f2fs", v->blk_device, len };
+        int arg_cnt = 2;
+
+        if (length) {
+            sprintf(len, "%llu", length / 512);
+            arg_cnt++;
+        }
+        if (make_f2fs_main(arg_cnt, args) != 0) {
             LOGE("format_volume: mkfs.f2fs failed on %s\n", v->blk_device);
             return -1;
         }
         return 0;
     }
 #endif
+
     return format_unknown_device(device, path, fs_type);
 }
 
