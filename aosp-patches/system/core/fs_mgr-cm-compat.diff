@@ -1,0 +1,21 @@
+From: DoloresPark <dolorespark@e-vertise.com>
+Date: Thu, 28 Aug 2014 21:35:09 -0400
+Subject: fs_mgr: add CM-specific fields to 'fstab_rec'
+
+diff --git a/fs_mgr/include/fs_mgr.h b/fs_mgr/include/fs_mgr.h
+--- a/fs_mgr/include/fs_mgr.h
++++ b/fs_mgr/include/fs_mgr.h
+@@ -44,6 +44,13 @@ struct fstab_rec {
+     int partnum;
+     int swap_prio;
+     unsigned int zram_size;
++
++    // cwm
++    char *blk_device2;
++    char *fs_type2;
++    char *fs_options2;
++
++    char *lun;
+ };
+ 
+ struct fstab *fs_mgr_read_fstab(const char *fstab_path);

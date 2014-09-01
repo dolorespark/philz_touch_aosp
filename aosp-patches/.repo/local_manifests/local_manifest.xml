@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+
+  <remote  name="cm"
+           fetch="https://github.com/CyanogenMod" />
+
+  <remote  name="dopa"
+           fetch="https://github.com/dolorespark" />
+
+  <project path="external/exfat"
+           name="android_external_exfat"
+           revision="refs/heads/cm-11.0"
+           remote="cm" />
+
+  <project path="external/fuse"
+           name="android_external_fuse"
+           revision="refs/heads/cm-11.0"
+           remote="cm" />
+
+  <project path="external/ntfs-3g"
+           name="android_external_ntfs-3g"
+           revision="refs/heads/cm-11.0"
+           remote="cm" />
+
+  <project path="external/busybox"
+           name="android_external_busybox"
+           revision="refs/heads/cm-11.0"
+           remote="cm" />
+
+  <project path="external/pigz"
+           name="android_external_pigz"
+           revision="refs/heads/cm-11.0"
+           remote="cm" />
+
+  <project path="external/cm_vold"
+           name="android_system_vold"
+           revision="refs/heads/cm-11.0"
+           remote="cm" />
+
+  <project path="external/f2fs-tools"
+           name="platform/external/f2fs-tools"
+           revision="master"
+           remote="aosp" />
+
+  <project path="bootable/recovery-philz"
+           name="philz_touch_aosp"
+           revision="refs/heads/dopa444"
+           remote="dopa" />
+
+</manifest>
