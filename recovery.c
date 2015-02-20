@@ -1138,7 +1138,7 @@ main(int argc, char **argv) {
             property_set("ctl.stop", argv[1]);
             return 0;
         }
-        return busybox_driver(argc, argv);
+        return -1;
     }
 
     // devices can run specific tasks on recovery start

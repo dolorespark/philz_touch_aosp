@@ -43,8 +43,6 @@ extern int fsck_f2fs_main(int argc, char **argv);
 extern int fibmap_main(int argc, char **argv);
 #endif
 
-extern int busybox_driver(int argc, char **argv);
-
 extern int flash_image_main(int argc, char **argv);
 extern int edify_main(int argc, char **argv);
 extern int dump_image_main(int argc, char **argv);

@@ -97,7 +97,8 @@ void reset_custom_job_settings(int custom_job);
 #define MAX_EXTRA_NANDROID_PARTITIONS    5
 void reset_extra_partitions_state();
 int get_extra_partitions_state();
-struct extra_partitions_list {
+
+extern struct extra_partitions_list {
     char mount_point[PATH_MAX];
     int backup_state;
 } extra_partition[MAX_EXTRA_NANDROID_PARTITIONS];
